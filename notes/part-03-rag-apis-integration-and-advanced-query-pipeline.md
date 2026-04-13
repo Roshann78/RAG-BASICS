@@ -125,25 +125,65 @@ flowchart LR
 
 ---
 
-## 5) `rag_simple` vs `rag_advanced`
+## 5) Basic vs Enhanced vs Advanced (all three notebook versions)
 
-## `rag_simple`
+Your notebook now contains three levels of RAG query handling:
 
-- Minimal flow
-- Retrieves chunks and asks LLM
-- Good for fast testing
-- Less explainability
+## A) Basic (`rag_simple`)
 
-## `rag_advanced`
+- Minimal query flow: retrieve context, send prompt, return answer text
+- Fast for first testing
+- No explicit confidence score
+- Limited response metadata
 
-- Adds controls and observability:
+## B) Enhanced (`rag_advanced`)
+
+- Adds structured output fields
+- Supports retrieval filtering with:
   - `top_k`
-  - `min_score` threshold
-  - source records (`source`, `page`, `preview`)
-  - confidence estimate (max similarity score)
-  - optional context return
+  - `min_score`
+- Returns:
+  - `answer`
+  - `sources`
+  - `confidence`
+  - optional `context`
+- Better for debugging and evaluation than basic flow
 
-This is closer to practical application behavior.
+## C) Advanced class-based pipeline (`AdvancedRAGPipeline`)
+
+- Wraps the full flow in a reusable class
+- Adds richer application features:
+  - citations appended to answer text
+  - optional streaming output behavior
+  - optional answer summarization
+  - query history memory (`self.history`)
+  - structured dictionary output for downstream apps
+
+This third version is the most product-oriented stage in your notebook.
+
+### Side-by-side comparison
+
+| Feature | Basic (`rag_simple`) | Enhanced (`rag_advanced`) | Advanced (`AdvancedRAGPipeline.query`) |
+|---|---|---|---|
+| Retrieval | Yes | Yes | Yes |
+| `top_k` control | Yes | Yes | Yes |
+| Score threshold | No explicit parameter | Yes (`min_score`) | Yes (`min_score`) |
+| Sources returned | No | Yes | Yes |
+| Confidence score | No | Yes | Indirect via source scores |
+| Context return option | No | Yes (`return_context`) | Context used internally |
+| Citations in final answer | No | No (sources returned separately) | Yes (appended) |
+| Streaming behavior | No | No | Optional (`stream=True`) |
+| Summarization | No | No | Optional (`summarize=True`) |
+| History tracking | No | No | Yes (`history`) |
+
+### Execution flow evolution
+
+```mermaid
+flowchart LR
+  B1[Basic] --> B2[Answer only]
+  E1[Enhanced] --> E2[Answer plus sources and confidence]
+  A1[Advanced class] --> A2[Answer plus citations summary history]
+```
 
 ---
 
@@ -166,6 +206,11 @@ Practical tuning:
 
 - Start with `min_score=0.0` or `0.05`
 - Increase slowly only after testing multiple questions
+
+Important in your current notebook:
+
+- The advanced class also uses `min_score`, so strict values can still return empty context.
+- If you want fewer empty responses, start class queries with `min_score=0.05` and adjust after testing.
 
 ---
 
