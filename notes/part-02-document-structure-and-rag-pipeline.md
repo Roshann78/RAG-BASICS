@@ -63,26 +63,26 @@ In your notebook, this appears through LangChain `Document` objects and loaders:
 ```mermaid
 flowchart LR
   A[Raw Sources: TXT/PDF/HTML/DB] --> B[Loaders parse files]
-  B --> C[LangChain Document objects<br/>content + metadata]
+  B --> C[LangChain document objects with metadata]
   C --> D[Chunking with overlap]
-  D --> E[Embedding model<br/>SentenceTransformer]
-  E --> F[Vector DB<br/>Chroma PersistentClient]
+  D --> E[Embedding model SentenceTransformer]
+  E --> F[Vector DB Chroma PersistentClient]
 ```
 
 ### Concept flowchart
 
 ```mermaid
 flowchart LR
-  DI[Data Ingestion<br/>PDF / HTML / Excel / DB]
-  DS[Document Structure<br/>Content + Metadata + Structure]
+  DI[Data Ingestion PDF HTML Excel DB]
+  DS[Document Structure Content Metadata Structure]
   C1[Chunk 1]
   C2[Chunk 2]
   C3[Chunk 3]
   C4[Chunk 4]
-  EMB[Embedding<br/>Text -> Vectors]
-  VDB[(Vector DB)]
+  EMB[Embedding Text to Vectors]
+  VDB[Vector DB]
   SS[Similarity Search]
-  LLM[LLM<br/>limited context window]
+  LLM[LLM limited context window]
 
   DI --> DS
   DS --> C1
@@ -142,7 +142,7 @@ flowchart TB
   Q[User Query] --> QE[Query Embedding]
   QE --> S[Similarity Search in Chroma]
   S --> K[Top-k Chunks + Metadata]
-  K --> P[Prompt Assembly<br/>Context + Question]
+  K --> P[Prompt Assembly Context and Question]
   P --> LLM[LLM]
   LLM --> A[Grounded Answer]
 ```
@@ -178,18 +178,18 @@ Your `notebook/document.ipynb` currently has this practical sequence:
 ```mermaid
 flowchart TB
   subgraph Ingestion
-    L1[TextLoader / DirectoryLoader / PyMuPDFLoader]
-    L2[split_documents()]
-    L3[EmbeddingManager.generate_embeddings()]
-    L4[VectorStore.add_documents()]
+    L1[Load documents with loaders]
+    L2[Split documents into chunks]
+    L3[Generate document embeddings]
+    L4[Add documents to vector store]
     L1 --> L2 --> L3 --> L4
   end
 
   subgraph Retrieval
     R1[User query]
-    R2[EmbeddingManager.generate_embeddings(query)]
-    R3[VectorStore.search_similar()]
-    R4[RAGRetriever.retrieve()]
+    R2[Generate query embedding]
+    R3[Search similar chunks]
+    R4[Return retrieved chunks]
     R1 --> R2 --> R3 --> R4
   end
 ```
