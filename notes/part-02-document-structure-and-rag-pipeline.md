@@ -69,7 +69,7 @@ flowchart LR
   E --> F[Vector DB<br/>Chroma PersistentClient]
 ```
 
-### Slide-style flowchart (like your screenshot)
+### Concept flowchart
 
 ```mermaid
 flowchart LR
